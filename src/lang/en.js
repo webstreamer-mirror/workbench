@@ -70,7 +70,8 @@ export default {
     github: 'Github',
     screenfull: 'Screenfull',
     theme: 'Theme',
-    size: 'Global Size'
+    size: 'Global Size',
+    overview: 'Overview',
   },
   login: {
     title: 'Login Form',
