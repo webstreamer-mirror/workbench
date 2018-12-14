@@ -65,6 +65,22 @@ export const constantRouterMap = [
   {
     path: '',
     component: Layout,
+    redirect: 'overview',
+    children: [
+      {
+        path: 'overview',
+        component: () => import('@/views/overview/index'),
+        name: 'Overview',
+        meta: { title: 'overview', icon: 'documentation', noCache: true }
+      }
+    ]
+  }
+]
+
+export const constantRouterMap_reserved = [
+  {
+    path: '',
+    component: Layout,
     redirect: 'dashboard',
     children: [
       {
@@ -110,6 +126,31 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
+  {
+    path: '/webrtc',
+    component: Layout,
+    redirect: '/webrtc/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'webrtc',
+      icon: 'webrtc',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'console',
+        component: () => import('@/views/webrtc/console'),
+        name: 'WebRtcConsole',
+        meta: {
+          title: 'webrtcConsole',
+          roles: ['admin', 'editor'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  }
+]
+
+export const asyncRouterMap_reserved = [
   {
     path: '/permission',
     component: Layout,
