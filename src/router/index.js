@@ -75,9 +75,8 @@ export const constantRouterMap = [
       }
     ]
   }
-]
 
-export const constantRouterMap_reserved = [
+  /* [+] constantRouterMap removal
   {
     path: '',
     component: Layout,
@@ -117,6 +116,7 @@ export const constantRouterMap_reserved = [
       }
     ]
   }
+  [-] constantRouterMap removal*/
 ]
 
 export default new Router({
@@ -169,10 +169,9 @@ export const asyncRouterMap = [
         }
       }
     ]
-  }  
-]
+  },
 
-export const asyncRouterMap_reserved = [
+  /* [+] asyncRouterMap removal
   {
     path: '/permission',
     component: Layout,
@@ -218,7 +217,7 @@ export const asyncRouterMap_reserved = [
     ]
   },
 
-  /** When your routing table is too long, you can split it into small modules**/
+  // ** When your routing table is too long, you can split it into small modules** //
   componentsRouter,
   chartsRouter,
   nestedRouter,
@@ -407,5 +406,6 @@ export const asyncRouterMap_reserved = [
     ]
   },
 
+  [-] asyncRouterMap removal */
   { path: '*', redirect: '/404', hidden: true }
 ]

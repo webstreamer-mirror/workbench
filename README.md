@@ -39,11 +39,13 @@ This project is ported from [vue-element-admin](https://github.com/PanJiaChen/vu
 ## Credits
 * Free software [SVG online editor from runoob](https://c.runoob.com/more/svgeditor)
 
-* Author: [@surmon-china on GitHub vue-video-player](https://github.com/surmon-china/vue-video-player)
+* Chao Lee [@miaolz123 on GitHub vue-markdown](https://github.com/miaolz123/vue-markdown)
 
-* Author:  [@PanJiaChen on GitHub vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 
+* Surmon [@surmon-china on GitHub vue-video-player](https://github.com/surmon-china/vue-video-player)
 
-* Author: [@AndyWeston on GitHub at vue-webrtc](https://github.com/westonsoftware)
+* PanJiaChen  [@PanJiaChen on GitHub vue-element-admin](https://github.com/PanJiaChen/vue-element-admin) 
+
+* Andy Weston [@AndyWeston on GitHub at vue-webrtc](https://github.com/westonsoftware)
 
   This project is based off of the excellent work found at WebRTC Experiments:
 https://www.rtcmulticonnection.org/
