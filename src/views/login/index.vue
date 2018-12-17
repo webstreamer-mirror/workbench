@@ -37,6 +37,19 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="webstreamer">
+        <span class="svg-container">
+          <svg-icon icon-class="international" />
+        </span>
+        <el-input
+          v-model="loginForm.webstreamer"
+          :placeholder="loginForm.webstreamer"
+          name="webstreamer"
+          type="text"
+          auto-complete="on"
+        />
+      </el-form-item>
+
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">{{ $t('login.logIn') }}</el-button>
 
       <div class="tips">
@@ -88,7 +101,8 @@ export default {
     return {
       loginForm: {
         username: 'admin',
-        password: '1111111'
+        password: '1111111',
+        webstreamer: 'http://127.0.0.1:8080'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],

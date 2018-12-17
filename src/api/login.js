@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
-export function loginByUsername(username, password) {
+export function loginByUsername(username, password, webstreamer) {
   const data = {
     username,
     password
   }
+  console.log('=========>', webstreamer)
   return request({
     url: '/login/login',
     method: 'post',
