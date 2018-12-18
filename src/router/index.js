@@ -7,10 +7,10 @@ Vue.use(Router)
 import Layout from '@/views/layout/Layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
-import chartsRouter from './modules/charts'
-import tableRouter from './modules/table'
-import nestedRouter from './modules/nested'
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
+// import nestedRouter from './modules/nested'
 
 /** note: Submenu only appear when children.length>=1
  *  detail see  https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -127,6 +127,28 @@ export default new Router({
 
 export const asyncRouterMap = [
   {
+    path: '/webrtc',
+    component: Layout,
+    redirect: '/webrtc/console',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'webrtc',
+      icon: 'webrtc',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'console',
+        component: () => import('@/views/webrtc/console'),
+        name: 'WebRtcConsole',
+        meta: {
+          title: 'console',
+          roles: ['admin', 'editor'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
+  {
     path: '/videojs',
     component: Layout,
     redirect: '/videojs/console',
@@ -193,8 +215,6 @@ export const asyncRouterMap = [
       }
     ]
   },
-
- 
   {
     path: '/permission',
     component: Layout,
