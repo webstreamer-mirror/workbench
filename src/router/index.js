@@ -126,6 +126,28 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
+  {
+    path: '/videojs',
+    component: Layout,
+    redirect: '/videojs/console',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'videojs',
+      icon: 'videojs',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'console',
+        component: () => import('@/views/videojs/console'),
+        name: 'VideoJSConsole',
+        meta: {
+          title: 'console',
+          roles: ['admin', 'editor'] // or you can only set roles in sub nav
+        }
+      }
+    ]
+  },
   /* [+] asyncRouterMap removal
   {
     path: '/permission',
