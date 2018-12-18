@@ -3846,6 +3846,7 @@ ActionheroWebsocketClient.prototype.actionWeb = function (params, callback) {
     var response
     if (xmlhttp.readyState === 4) {
       if (xmlhttp.status === 200) {
+        console.log('response: ', xmlhttp.responseText)
         response = JSON.parse(xmlhttp.responseText)
       } else {
         try {
