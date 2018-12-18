@@ -1,21 +1,27 @@
 import request from '@/utils/request'
-
-export function loginByUsername(username, password) {
+import { WebsocketClient, setApiUrl } from '@/utils/actionhero'
+export function loginByUsername(username, password, webstreamer) {
   const data = {
     username,
     password
   }
-  return request({
-    url: '/login/login',
-    method: 'post',
-    data
+  console.log('--=>', webstreamer)
+  var client = new WebsocketClient({ url: webstreamer })
+  return new Promise((resolve, reject) => {
+    data.httpMethod = 'GET'
+    client.action('login', data).then((res) => {
+      setApiUrl(webstreamer)
+      resolve({ data: { token: 'admin' }})
+    }).catch((error) => {
+      console.log('error', error)
+      reject(error)
+    })
   })
 }
 
 export function logout() {
-  return request({
-    url: '/login/logout',
-    method: 'post'
+  return new Promise((resolve, reject) => {
+    resolve() // always success
   })
 }
 

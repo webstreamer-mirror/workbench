@@ -9,7 +9,13 @@
     <title><%= webpackConfig.name %></title>
   </head>
   <body>
-    <script src="<%= BASE_URL %>static/tinymce4.7.5/tinymce.min.js"></script>
+    <!--script src="<%= BASE_URL %>static/tinymce4.7.5/tinymce.min.js"></script-->
+
+    <!--script src=https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js></script-->
+    <script src="./lib/socket.io/2.2.0/socket.io.js"></script>
+
+    <script src="./lib/ActionheroWebsocketClient.js"></script>
+
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
