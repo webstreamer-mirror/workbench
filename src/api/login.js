@@ -5,7 +5,6 @@ export function loginByUsername(username, password, webstreamer) {
     username,
     password
   }
-  console.log('--=>', webstreamer)
   var client = new WebsocketClient({ url: webstreamer })
   return new Promise((resolve, reject) => {
     data.httpMethod = 'GET'

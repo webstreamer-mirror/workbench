@@ -65,6 +65,21 @@ export const constantRouterMap = [
   {
     path: '',
     component: Layout,
+    redirect: 'overview',
+    children: [
+      {
+        path: 'overview',
+        component: () => import('@/views/overview/index'),
+        name: 'Overview',
+        meta: { title: 'overview', icon: 'documentation', noCache: true }
+      }
+    ]
+  }
+
+  /* [+] constantRouterMap removal
+  {
+    path: '',
+    component: Layout,
     redirect: 'dashboard',
     children: [
       {
@@ -101,6 +116,7 @@ export const constantRouterMap = [
       }
     ]
   }
+  [-] constantRouterMap removal*/
 ]
 
 export default new Router({
@@ -110,6 +126,7 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
+  /* [+] asyncRouterMap removal
   {
     path: '/permission',
     component: Layout,
@@ -155,7 +172,53 @@ export const asyncRouterMap = [
     ]
   },
 
-  /** When your routing table is too long, you can split it into small modules**/
+ 
+  {
+    path: '/permission',
+    component: Layout,
+    redirect: '/permission/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: 'permission',
+      icon: 'lock',
+      roles: ['admin', 'editor'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'page',
+        component: () => import('@/views/permission/page'),
+        name: 'PagePermission',
+        meta: {
+          title: 'pagePermission',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'directive',
+        component: () => import('@/views/permission/directive'),
+        name: 'DirectivePermission',
+        meta: {
+          title: 'directivePermission'
+          // if do not set roles, means: this page does not require permission
+        }
+      }
+    ]
+  },
+
+  {
+    path: '/icon',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/svg-icons/index'),
+        name: 'Icons',
+        meta: { title: 'icons', icon: 'icon', noCache: true }
+      }
+    ]
+  },
+
+  // ** When your routing table is too long, you can split it into small modules** //
   componentsRouter,
   chartsRouter,
   nestedRouter,
@@ -344,5 +407,6 @@ export const asyncRouterMap = [
     ]
   },
 
+  [-] asyncRouterMap removal */
   { path: '*', redirect: '/404', hidden: true }
 ]
