@@ -1,5 +1,6 @@
 <template>
   <div class="video-list">
+    <!-- <script src="https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js"></script> -->
     <div v-for="item in videoList" v-bind:video="item" v-bind:key="item.id" class="video-item">
       <video
         controls
@@ -10,11 +11,17 @@
         :id="item.id"
       ></video>
     </div>
+    <div id="ocr_results"></div>
+    <div id="ocr_status"></div>
   </div>
 </template>
 
 <script>
+// src =  "https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js";
 var RTCMultiConnection = require("rtcmulticonnection");
+var Tesseract = require("tesseract.js");
+// var Tesseract = require("https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js");
+// import Tesseract from "https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js";
 
 export default {
   name: "vue-webrtc",
@@ -58,6 +65,8 @@ export default {
     this.sessionId = this.roomId;
     this.rtcmConnection = new RTCMultiConnection();
     this.rtcmConnection.socketURL = this.socketURL;
+    this.rtcmConnection.socketMessageEvent = "video-conference-demo";
+
     this.rtcmConnection.session = {
       audio: true,
       video: true
@@ -73,7 +82,7 @@ export default {
         srcObject: event.stream,
         muted: event.type === "local"
       };
-      that.videoList.push(video);
+      if (!video.muted) that.videoList.push(video);
       if (event.type === "local") {
         that.localVideo = video;
       }
@@ -92,12 +101,13 @@ export default {
   },
   methods: {
     join() {
+      var that = this;
       this.rtcmConnection.openOrJoin(this.sessionId, function(
         isRoomExist,
         roomid
       ) {
         if (isRoomExist === false && that.rtcmConnection.isInitiator === true) {
-          this.$emit("opened-room", roomid);
+          that.$emit("opened-room", roomid);
         }
       });
     },
@@ -109,30 +119,71 @@ export default {
       this.videoList = [];
     },
     capture() {
-      return this.getCanvas().toDataURL(this.screenshotFormat);
+      const dataUrl = this.getCanvas().toDataURL(this.screenshotFormat);
+      //   let image = new Image();
+      //   image.src = dataUrl;
+      //   image.crossOrigin = "Anonymous";
+
+      //   const canvas = document.getElementById("canvas");
+      //   let self = this;
+      //   image.onload = () => {
+      //     canvas.width = image.width;
+      //     canvas.height = image.height;
+
+      //     let ctx = canvas.getContext("2d");
+      //     ctx.drawImage(image, 0, 0);
+
+      //     let src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      //     self.runOCR(src);
+      //     runOCR;
+      //   };
+      return dataUrl;
     },
     getCanvas() {
-      let video = this.getCurrentVideo();
-      if (video !== null && !this.ctx) {
-        let canvas = document.createElement("canvas");
-        canvas.height = video.clientHeight;
-        canvas.width = video.clientWidth;
-        this.canvas = canvas;
-        this.ctx = canvas.getContext("2d");
-      }
-      const { ctx, canvas } = this;
+      let video = document.getElementById(this.videoList[0].id);
+      //   console.log(video.currentTime);
+      //   console.log(video);
+      //   console.log(new Date());
+      let canvas = document.createElement("canvas");
+      canvas.height = video.videoHeight;
+      canvas.width = video.videoWidth;
+
+      var ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      console.log(data);
+      Tesseract.recognize(data)
+        .then(function(result) {
+          document.getElementById("ocr_results").innerText = result.text;
+        })
+        .progress(function(result) {
+          document.getElementById("ocr_status").innerText =
+            result["status"] + " (" + result["progress"] * 100 + "%)";
+        });
       return canvas;
     },
+    runOCR(image) {
+      Tesseract.recognize(image)
+        .then(function(result) {
+          document.getElementById("ocr_results").innerText = result.text;
+        })
+        .progress(function(result) {
+          document.getElementById("ocr_status").innerText =
+            result["status"] + " (" + result["progress"] * 100 + "%)";
+        });
+    },
     getCurrentVideo() {
-      if (this.localVideo === null) {
-        return null;
-      }
-      for (var i = 0, len = this.$refs.videos.length; i < len; i++) {
-        if (this.$refs.videos[i].id === this.localVideo.id)
-          return this.$refs.videos[i];
-      }
-      return null;
+      const video = document.getElementById("video");
+      return video;
+      //   if (this.localVideo === null) {
+      //     return null;
+      //   }
+      //   for (var i = 0, len = this.$refs.videos.length; i < len; i++) {
+      //     if (this.$refs.videos[i].id === this.localVideo.id)
+      //       return this.$refs.videos[i];
+      //   }
+      //   return null;
     },
     config(options) {
       console.log("webrtc config: ", options);

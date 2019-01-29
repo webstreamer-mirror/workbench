@@ -23,7 +23,9 @@ npm run debug
 
     - audio/video checkbox is invalid
 
-
+  * webrtc/livestream
+    
+    重复添加删除同一个webrtc audience时，需要有一定间隔
 
 
 

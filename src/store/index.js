@@ -5,19 +5,23 @@ import errorLog from './modules/errorLog'
 import permission from './modules/permission'
 import tagsView from './modules/tagsView'
 import user from './modules/user'
+import test from './modules/test'
+import livestream from './modules/livestream'
 import getters from './getters'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  modules: {
-    app,
-    errorLog,
-    permission,
-    tagsView,
-    user
-  },
-  getters
+    modules: {
+        app,
+        errorLog,
+        permission,
+        tagsView,
+        user,
+        test,
+        livestream
+    },
+    getters
 })
 
 export default store

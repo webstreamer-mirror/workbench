@@ -1,6 +1,5 @@
 <template>
   <div class="app-container">
-
     <div class="filter-container">
       {{ title }}
       <el-checkbox-group v-model="checkboxVal">
@@ -12,27 +11,27 @@
 </template>
 
 <script>
-const defaultOptions = ['audio', 'video']
+const defaultOptions = ["audio", "video"];
 
 export default {
   props: {
     title: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   data() {
     return {
-      options: ['audio', 'video'],
+      options: ["audio", "video"],
       checkboxVal: defaultOptions // checkboxVal
-    }
+    };
   },
   watch: {
     checkboxVal(valArr) {
-      this.options = this.Options.filter(i => valArr.indexOf(i) >= 0)
-      this.$emit('change', this.options)
+      this.options = this.options.filter(i => valArr.indexOf(i) >= 0);
+      this.$emit("change", this.options);
     }
   }
-}
+};
 </script>
 
