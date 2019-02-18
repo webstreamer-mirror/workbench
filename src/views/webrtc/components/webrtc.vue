@@ -1,6 +1,5 @@
 <template>
   <div class="video-list">
-    <!-- <script src="https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js"></script> -->
     <div v-for="item in videoList" v-bind:video="item" v-bind:key="item.id" class="video-item">
       <video
         controls
@@ -17,9 +16,8 @@
 </template>
 
 <script>
-// src =  "https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js";
 var RTCMultiConnection = require("rtcmulticonnection");
-var Tesseract = require("tesseract.js");
+// var Tesseract = require("tesseract.js");
 // var Tesseract = require("https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js");
 // import Tesseract from "https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js";
 
@@ -82,10 +80,12 @@ export default {
         srcObject: event.stream,
         muted: event.type === "local"
       };
-      if (!video.muted) that.videoList.push(video);
       if (event.type === "local") {
         that.localVideo = video;
+      } else {
+        that.videoList.push(video);
       }
+
       that.$emit("joined-room", video);
     };
     this.rtcmConnection.onstreamended = function(event) {
@@ -98,6 +98,14 @@ export default {
       that.videoList = newList;
       that.$emit("left-room", event.streamid);
     };
+
+    let recaptchaScript = document.createElement("script");
+    recaptchaScript.setAttribute(
+      "src",
+      "https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js"
+    );
+    recaptchaScript.async = true;
+    document.head.appendChild(recaptchaScript);
   },
   methods: {
     join() {
@@ -115,35 +123,24 @@ export default {
       this.rtcmConnection.attachStreams.forEach(function(localStream) {
         localStream.stop();
       });
+
       this.rtcmConnection.close();
+      this.rtcmConnection.closeSocket();
       this.videoList = [];
     },
     capture() {
-      const dataUrl = this.getCanvas().toDataURL(this.screenshotFormat);
-      //   let image = new Image();
-      //   image.src = dataUrl;
-      //   image.crossOrigin = "Anonymous";
+      const canvas = this.getCanvas();
+      const dataUrl = canvas.toDataURL(this.screenshotFormat);
 
-      //   const canvas = document.getElementById("canvas");
-      //   let self = this;
-      //   image.onload = () => {
-      //     canvas.width = image.width;
-      //     canvas.height = image.height;
+      let ctx = canvas.getContext("2d");
+      let src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      this.runOCR(src);
 
-      //     let ctx = canvas.getContext("2d");
-      //     ctx.drawImage(image, 0, 0);
-
-      //     let src = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      //     self.runOCR(src);
-      //     runOCR;
-      //   };
       return dataUrl;
     },
     getCanvas() {
       let video = document.getElementById(this.videoList[0].id);
-      //   console.log(video.currentTime);
-      //   console.log(video);
-      //   console.log(new Date());
+
       let canvas = document.createElement("canvas");
       canvas.height = video.videoHeight;
       canvas.width = video.videoWidth;
@@ -151,20 +148,13 @@ export default {
       var ctx = canvas.getContext("2d");
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      let data = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      console.log(data);
-      Tesseract.recognize(data)
-        .then(function(result) {
-          document.getElementById("ocr_results").innerText = result.text;
-        })
-        .progress(function(result) {
-          document.getElementById("ocr_status").innerText =
-            result["status"] + " (" + result["progress"] * 100 + "%)";
-        });
       return canvas;
     },
     runOCR(image) {
-      Tesseract.recognize(image)
+      Tesseract.recognize(image, {
+        lang: "eng",
+        tessedit_char_whitelist: "0123456789:."
+      })
         .then(function(result) {
           document.getElementById("ocr_results").innerText = result.text;
         })
@@ -172,18 +162,112 @@ export default {
           document.getElementById("ocr_status").innerText =
             result["status"] + " (" + result["progress"] * 100 + "%)";
         });
+    },
+    runFFT() {
+      let stream = this.videoList[0].srcObject;
+      var audioCtx = new AudioContext();
+      let source = audioCtx.createMediaStreamSource(stream);
+      var analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      source.connect(analyser);
+      analyser.connect(audioCtx.destination);
+      console.log(stream);
+      console.log(source);
+      console.log(analyser);
+
+      let canvas = document.createElement("canvas");
+      canvas.height = 300;
+      canvas.width = 400;
+      var ctx = canvas.getContext("2d");
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // //   let drawVisual = requestAnimationFrame(draw);
+      var bufferLength = analyser.frequencyBinCount;
+      var dataArray = new Uint8Array(bufferLength);
+      ///////////////////////////////////////////////////////////////////////////////////
+      //   analyser.getByteTimeDomainData(dataArray);
+      //   console.log(dataArray);
+
+      //   ctx.fillStyle = "rgb(200, 200, 200)";
+      //   ctx.fillRect(0, 0, canvas.width, canvas.height);
+      //   ctx.lineWidth = 10;
+      //   ctx.strokeStyle = "rgb(0, 0, 0)";
+      //   ctx.beginPath();
+      //   var sliceWidth = (canvas.width * 1.0) / bufferLength;
+      //   console.log("sliceWidth: " + sliceWidth);
+      //   var x = 0;
+      //   for (var i = 0; i < bufferLength; i++) {
+      //     var v = dataArray[i] / 128.0;
+      //     var y = (v * canvas.height) / 2;
+      //     console.log(`x: ${x} y: ${y}`);
+
+      //     if (i === 0) {
+      //       ctx.moveTo(x, y);
+      //     } else {
+      //       ctx.lineTo(x, y);
+      //     }
+
+      //     x += sliceWidth;
+      //   }
+
+      ///////////////////////////////////////////////////////////////////////////////////
+
+      analyser.getByteTimeDomainData(dataArray);
+      //   analyser.getByteFrequencyData(dataArray);
+      console.log(dataArray);
+
+      ctx.fillStyle = "rgb(0, 0, 0)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      var barWidth = (canvas.width / bufferLength) * 2.5;
+      var barHeight;
+      var x = 0;
+
+      for (var i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i] / 2;
+
+        ctx.fillStyle = "rgb(" + (barHeight + 100) + ",50,50)";
+        ctx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight);
+
+        x += barWidth + 1;
+      }
+
+      //   var cwidth = canvas.width;
+      //   var cheight = canvas.height - 2;
+      //   var meterWidth = 10; //能量条的宽度
+      //   var gap = 2; //能量条间的间距
+      //   var meterNum = 800 / (10 + 2); //计算当前画布上能画多少条
+      //   var capHeight = 2;
+
+      //   analyser.getByteFrequencyData(dataArray);
+      //   var step = Math.round(dataArray.length / meterNum);
+
+      //   ctx.clearRect(0, 0, cwidth, cheight); //清理画布准备画画
+      //   //定义一个渐变样式用于画图
+      //   var gradient = ctx.createLinearGradient(0, 0, 0, 300);
+      //   gradient.addColorStop(1, "#0f0");
+      //   gradient.addColorStop(0.5, "#ff0");
+      //   gradient.addColorStop(0, "#f00");
+      //   ctx.fillStyle = gradient;
+      //   //对信源数组进行抽样遍历，画出每个频谱条
+      //   for (var i = 0; i < meterNum; i++) {
+      //     var value = dataArray[i * step];
+      //     value = 120;
+      //     ctx.fillRect(
+      //       i * 12 /*频谱条的宽度+条间间距*/,
+      //       cheight - value + capHeight,
+      //       meterWidth,
+      //       cheight
+      //     );
+      //   }
+      ////////////////////////////////////////////////////////////////////////////////////
+      const dataUrl = canvas.toDataURL(this.screenshotFormat);
+      return dataUrl;
     },
     getCurrentVideo() {
       const video = document.getElementById("video");
       return video;
-      //   if (this.localVideo === null) {
-      //     return null;
-      //   }
-      //   for (var i = 0, len = this.$refs.videos.length; i < len; i++) {
-      //     if (this.$refs.videos[i].id === this.localVideo.id)
-      //       return this.$refs.videos[i];
-      //   }
-      //   return null;
     },
     config(options) {
       console.log("webrtc config: ", options);

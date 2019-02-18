@@ -100,6 +100,12 @@
         icon="livestream"
         @click="capture_image"
       >Capture</el-button>
+      <el-button
+        style="margin-bottom:20px;"
+        type="primary"
+        icon="livestream"
+        @click="audio_freq"
+      >FFT</el-button>
       <br>name : &emsp;
       <el-input v-model="webrtc_audience.name" style="width:100px;"/>&emsp;signal bridge : &emsp;
       <el-input v-model="webrtc_audience.option.signal_bridge" style="width:250px;"/>
@@ -114,7 +120,8 @@
     <el-button style="margin-bottom:20px;" type="primary" icon="webrtc" @click="leave">Leave</el-button>-->
     <vue-webrtc ref="webrtc" width="100%" @error="onWebRTCError"/>
     <br>
-    <img :src="img" class="img-responsive">
+    <img :src="snapshot" class="img-responsive">
+    <img :src="audiofreq" class="img-responsive">
     <br>
   </div>
 </template>
@@ -159,7 +166,8 @@ export default {
           connection_id: "1"
         }
       },
-      img: null,
+      snapshot: null,
+      audiofreq: null,
       webstreamer: "http://192.168.199.128:8080",
       roomId: "webstreamer/123",
       server: "http://localhost:9001/"
@@ -204,7 +212,10 @@ export default {
       this.leave();
     },
     capture_image() {
-      this.img = this.$refs.webrtc.capture();
+      this.snapshot = this.$refs.webrtc.capture();
+    },
+    async audio_freq() {
+      this.audiofreq = this.$refs.webrtc.runFFT();
     },
     join() {
       this.$refs.webrtc.config({
