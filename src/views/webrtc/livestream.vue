@@ -112,7 +112,7 @@
     </label>
 
     <!-- <offer-option ref="offerSend" title="Send"/> -->
-    <offer-option ref="offerRecv" title="Receive"/>
+    <!-- <offer-option ref="offerRecv" title="Receive"/> -->
     <br>
     <br>
     <!-- <br>
@@ -121,17 +121,22 @@
     <vue-webrtc ref="webrtc" width="100%" @error="onWebRTCError"/>
     <br>
     <img :src="snapshot" class="img-responsive">
-    <img :src="audiofreq" class="img-responsive">
     <br>
+    <audio-spectrum ref="spectrum" width="100%"/>
   </div>
 </template>
 
 <script>
 import WebRTC from "./components/webrtc";
 import OfferOption from "./components/offerOption";
+import Spectrum from "./spectrum";
 export default {
   name: "livestream",
-  components: { "vue-webrtc": WebRTC, "offer-option": OfferOption },
+  components: {
+    "vue-webrtc": WebRTC,
+    "offer-option": OfferOption,
+    "audio-spectrum": Spectrum
+  },
   data() {
     return {
       rtsp_test_server: {
@@ -215,7 +220,8 @@ export default {
       this.snapshot = this.$refs.webrtc.capture();
     },
     async audio_freq() {
-      this.audiofreq = this.$refs.webrtc.runFFT();
+      let stream = this.$refs.webrtc.get_mediastream();
+      this.$refs.spectrum.run_analyze(stream);
     },
     join() {
       this.$refs.webrtc.config({

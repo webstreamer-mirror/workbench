@@ -154,6 +154,23 @@ export const asyncRouterMap = [
                     title: 'livestream',
                     roles: ['admin', 'editor'] // or you can only set roles in sub nav
                 }
+            },
+            {
+                path: 'spectrum',
+                component: () => import('@/views/webrtc/spectrum'),
+                name: 'spectrum',
+                meta: {
+                    title: 'spectrum',
+                    roles: ['admin', 'editor'] // or you can only set roles in sub nav
+                }
+            }, {
+                path: 'filter',
+                component: () => import('@/views/webrtc/filter'),
+                name: 'filter',
+                meta: {
+                    title: 'filter',
+                    roles: ['admin', 'editor'] // or you can only set roles in sub nav
+                }
             }
         ]
     },
@@ -179,6 +196,7 @@ export const asyncRouterMap = [
             }
         ]
     },
+
     /* [+] asyncRouterMap removal
     {
       path: '/permission',
