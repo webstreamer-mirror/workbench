@@ -42,7 +42,7 @@ export default {
     },
     socketURL: {
       type: String,
-      default: "http://localhost:9001/"
+      default: "http://172.16.64.58:9001/"
     },
     cameraHeight: {
       type: [Number, String],

@@ -112,7 +112,7 @@
     </label>
 
     <!-- <offer-option ref="offerSend" title="Send"/> -->
-    <!-- <offer-option ref="offerRecv" title="Receive"/> -->
+    <offer-option ref="offerRecv" title="Receive"/>
     <br>
     <br>
     <!-- <br>
@@ -175,7 +175,7 @@ export default {
       audiofreq: null,
       webstreamer: "http://192.168.199.128:8080",
       roomId: "webstreamer/123",
-      server: "http://localhost:9001/"
+      server: "http://172.16.64.58:9001/"
     };
   },
   methods: {
