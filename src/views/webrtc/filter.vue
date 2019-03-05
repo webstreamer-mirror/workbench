@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import cv from "opencv.js";
+// import cv from "opencv.js";
 export default {
   name: "video_process",
   components: {},
@@ -44,10 +44,14 @@ export default {
     };
   },
   mounted() {
-    // let recaptchaScript = document.createElement("script");
-    // recaptchaScript.setAttribute("src", "@/assets/wasm/opencv/opencv.js");
-    // recaptchaScript.async = true;
-    // document.head.appendChild(recaptchaScript);
+    let recaptchaScript = document.createElement("script");
+    recaptchaScript.setAttribute(
+      "src",
+      "http://192.168.199.128:8088/build/opencv.js"
+    );
+    recaptchaScript.async = true;
+    document.head.appendChild(recaptchaScript);
+
     let self = this;
     if (navigator.mediaDevices) {
       console.log("getUserMedia supported.");
