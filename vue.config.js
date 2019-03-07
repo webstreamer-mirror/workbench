@@ -39,10 +39,17 @@ module.exports = {
                 }
             },
             '/api': {
-                target: `http://192.168.199.128:8080`,
+                target: `http://127.0.0.1:8080`,
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': '/api'
+                }
+            },
+            'socket.io': {
+                target: `http://127.0.0.1:9001`,
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/socket.io': '/socket.io'
                 }
             }
         },

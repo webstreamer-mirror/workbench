@@ -157,7 +157,7 @@ export const asyncRouterMap = [
             },
             {
                 path: 'spectrum',
-                component: () => import('@/views/webrtc/spectrum'),
+                component: () => import('@/views/webrtc/components/spectrum'),
                 name: 'spectrum',
                 meta: {
                     title: 'spectrum',

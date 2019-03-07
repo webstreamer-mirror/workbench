@@ -1,29 +1,7 @@
 <template>
   <div class="app-container">
-    <label>Rtsp Test Server
-      <el-button
-        style="margin-bottom:20px;"
-        type="primary"
-        icon="rtsp_test_server"
-        @click="create_rtsp_test_server"
-      >Create</el-button>
-      <el-button
-        style="margin-bottom:20px;"
-        type="primary"
-        icon="rtsp_test_server"
-        @click="destroy_rtsp_test_server"
-      >Destroy</el-button>
-
-      <br>id : &emsp;
-      <el-input v-model="rtsp_test_server.id" style="width:100px;"/>&emsp;port : &emsp;
-      <el-input v-model="rtsp_test_server.port" style="width:100px;"/>&emsp;path : &emsp;
-      <el-input v-model="rtsp_test_server.path" style="width:100px;"/>&emsp;video : &emsp;
-      <el-input v-model="rtsp_test_server.video" style="width:100px;"/>&emsp;audio : &emsp;
-      <el-input v-model="rtsp_test_server.audio" style="width:100px;"/>
-    </label>
+    <test-server ref="test-server" width="100%"/>
     <br>
-    <br>
-
     <label>Livestream
       <el-button
         style="margin-bottom:20px;"
@@ -112,13 +90,15 @@
     </label>
 
     <!-- <offer-option ref="offerSend" title="Send"/> -->
-    <offer-option ref="offerRecv" title="Receive"/>
+    <!-- <offer-option ref="offerRecv" title="Receive"/> -->
     <br>
     <br>
     <!-- <br>
     <el-button style="margin-bottom:20px;" type="primary" icon="webrtc" @click="join">Join</el-button>
     <el-button style="margin-bottom:20px;" type="primary" icon="webrtc" @click="leave">Leave</el-button>-->
     <vue-webrtc ref="webrtc" width="100%" @error="onWebRTCError"/>
+    <br>
+    <tesseract-ocr ref="tesseract" width="100%"/>
     <br>
     <img :src="snapshot" class="img-responsive">
     <br>
@@ -129,23 +109,21 @@
 <script>
 import WebRTC from "./components/webrtc";
 import OfferOption from "./components/offerOption";
-import Spectrum from "./spectrum";
+import Spectrum from "./components/spectrum";
+import Tesseract from "./components/tesseract";
+import TestServer from "./test_server";
+
 export default {
   name: "livestream",
   components: {
     "vue-webrtc": WebRTC,
     "offer-option": OfferOption,
-    "audio-spectrum": Spectrum
+    "audio-spectrum": Spectrum,
+    "tesseract-ocr": Tesseract,
+    "test-server":TestServer
   },
   data() {
     return {
-      rtsp_test_server: {
-        id: "app0",
-        port: 8554,
-        path: "/test",
-        video: "h264",
-        audio: "pcma"
-      },
       livestream: {
         id: "app1",
         url: "rtsp://192.168.199.128:8554/test",
@@ -166,7 +144,7 @@ export default {
         name: "audience2",
         option: {
           type: "webrtc",
-          signal_bridge: "http://172.16.64.58:9001/",
+          signal_bridge: "http://192.168.199.128:9001/",
           role: "offer",
           connection_id: "1"
         }
@@ -175,16 +153,10 @@ export default {
       audiofreq: null,
       webstreamer: "http://192.168.199.128:8080",
       roomId: "webstreamer/123",
-      server: "http://172.16.64.58:9001/"
+      server: "http://192.168.199.128:9001/"
     };
   },
   methods: {
-    create_rtsp_test_server() {
-      this.$store.dispatch("CreateRtspTestServer", this.rtsp_test_server);
-    },
-    destroy_rtsp_test_server() {
-      this.$store.dispatch("DestroyRtspTestServer", this.rtsp_test_server.id);
-    },
     create_livestream() {
       this.$store.dispatch("CreateLivestream", this.livestream);
     },
@@ -217,7 +189,9 @@ export default {
       this.leave();
     },
     capture_image() {
-      this.snapshot = this.$refs.webrtc.capture();
+      let canvas = this.$refs.webrtc.getCanvas();
+      this.snapshot = this.$refs.webrtc.capture(canvas);
+      this.$refs.tesseract.runOCR(canvas);
     },
     async audio_freq() {
       let stream = this.$refs.webrtc.get_mediastream();
@@ -228,8 +202,10 @@ export default {
         server: this.webrtc_audience.option.signal_bridge,
         roomId: this.webrtc_audience.option.connection_id,
         constraints: {
-          audio: this.$refs.offerRecv.options.some(val => val === "audio"),
-          video: this.$refs.offerRecv.options.some(val => val === "video")
+          audio: true,
+          video: true
+          //   audio: this.$refs.offerRecv.options.some(val => val === "audio"),
+          //   video: this.$refs.offerRecv.options.some(val => val === "video")
         }
       });
 
