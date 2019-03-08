@@ -62,7 +62,8 @@ export default {
 
     this.rtcmConnection.session = {
       audio: true,
-      video: true
+      video: true,
+      oneway: false
     };
     this.rtcmConnection.sdpConstraints.mandatory = {
       OfferToReceiveAudio: true,
@@ -121,9 +122,9 @@ export default {
       }
       const dataUrl = canvas.toDataURL(this.screenshotFormat);
 
-    //   let ctx = canvas.getContext("2d");
-    //   let src = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    //   this.runOCR(src, canvas);
+      //   let ctx = canvas.getContext("2d");
+      //   let src = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      //   this.runOCR(src, canvas);
 
       return dataUrl;
     },
@@ -166,7 +167,8 @@ export default {
       if (options.session) {
         this.rtcmConnection.session = {
           audio: options.session.audio || false,
-          video: options.session.video || false
+          video: options.session.video || false,
+          oneway: options.session.oneway || false
         };
       }
     }

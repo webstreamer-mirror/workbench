@@ -120,7 +120,7 @@ export default {
     "offer-option": OfferOption,
     "audio-spectrum": Spectrum,
     "tesseract-ocr": Tesseract,
-    "test-server":TestServer
+    "test-server": TestServer
   },
   data() {
     return {
@@ -157,25 +157,25 @@ export default {
     };
   },
   methods: {
-    create_livestream() {
-      this.$store.dispatch("CreateLivestream", this.livestream);
+    async create_livestream() {
+      await this.$store.dispatch("CreateLivestream", this.livestream);
     },
-    destroy_livestream() {
-      this.$store.dispatch("DestroyLivestream", this.livestream.id);
+    async destroy_livestream() {
+      await this.$store.dispatch("DestroyLivestream", this.livestream.id);
     },
     async startup_livestream() {
       await this.$store.dispatch("StartLivestream", this.livestream.id);
     },
-    stop_livestream() {
-      this.$store.dispatch("StopLivestream", this.livestream.id);
+    async stop_livestream() {
+      await this.$store.dispatch("StopLivestream", this.livestream.id);
     },
-    add_rtsp_audience() {
+    async add_rtsp_audience() {
       this.rtsp_audience.id = this.livestream.id;
-      this.$store.dispatch("AddAudience", this.rtsp_audience);
+      await this.$store.dispatch("AddAudience", this.rtsp_audience);
     },
-    remove_rtsp_audience() {
+    async remove_rtsp_audience() {
       this.rtsp_audience.id = this.livestream.id;
-      this.$store.dispatch("RemoveAudience", this.rtsp_audience);
+      await this.$store.dispatch("RemoveAudience", this.rtsp_audience);
     },
     async add_webrtc_audience() {
       this.webrtc_audience.id = this.livestream.id;
@@ -201,9 +201,10 @@ export default {
       this.$refs.webrtc.config({
         server: this.webrtc_audience.option.signal_bridge,
         roomId: this.webrtc_audience.option.connection_id,
-        constraints: {
+        session: {
           audio: true,
-          video: true
+          video: true,
+          oneway: true
           //   audio: this.$refs.offerRecv.options.some(val => val === "audio"),
           //   video: this.$refs.offerRecv.options.some(val => val === "video")
         }

@@ -41,16 +41,22 @@ export default {
       }
     };
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
-    create_rtsp_test_server() {
-      this.$store.dispatch("CreateRtspTestServer", this.rtsp_test_server);
+    async create_rtsp_test_server() {
+      let res = await this.$store.dispatch(
+        "CreateRtspTestServer",
+        this.rtsp_test_server
+      );
+      console.log("--------");
+      console.log(res);
     },
-    destroy_rtsp_test_server() {
-      this.$store.dispatch("DestroyRtspTestServer", this.rtsp_test_server.id);
-    },
+    async destroy_rtsp_test_server() {
+      let res = await this.$store.dispatch(
+        "DestroyRtspTestServer",
+        this.rtsp_test_server.id
+      );
+    }
   }
 };
 </script>
