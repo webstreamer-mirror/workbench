@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <label>Rtsp Test Server
+    <label>Rtsp Test Source
       <el-button
         style="margin-bottom:20px;"
         type="primary"
